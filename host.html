@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Brand & Logo Challenge - Host</title>
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+<main class="page">
+
+  <header class="topbar">
+    <div class="brandmark">
+      <span class="dot"></span>
+      Brand & Logo Challenge
+    </div>
+
+    <div class="pill">Host Dashboard</div>
+  </header>
+
+  <section id="configWarning" class="card config-warning hidden">
+    <div class="pad center">
+      <h2>Setup required</h2>
+      <p class="muted">
+        Add your Supabase project URL and publishable key in
+        <b>js/config.js</b>.
+      </p>
+    </div>
+  </section>
+
+  <section id="authView" class="card hero hidden">
+    <div class="eyebrow">Host Access</div>
+
+    <h1>Host Dashboard</h1>
+
+    <p>
+      Sign in with the host account you create in Supabase.
+    </p>
+
+    <form id="loginForm" class="form">
+      <input
+        id="hostEmail"
+        type="email"
+        class="input"
+        placeholder="Host email"
+        autocomplete="email"
+        required
+      >
+
+      <input
+        id="hostPassword"
+        type="password"
+        class="input"
+        placeholder="Password"
+        autocomplete="current-password"
+        required
+      >
+
+      <button class="btn primary" type="submit">
+        Sign In
+      </button>
+    </form>
+
+    <div id="authMessage" class="notice" hidden></div>
+  </section>
+
+  <section id="hostView" class="hidden">
+
+    <div class="grid2">
+
+      <div class="card">
+        <div class="pad">
+
+          <div class="phasebar">
+            <div>
+              <div class="muted small">
+                Current Game
+              </div>
+
+              <h2
+                id="hostPhaseTitle"
+                class="section-title"
+              >
+                Lobby
+              </h2>
+            </div>
+
+            <div class="pill" id="hostGameCode">
+              ------
+            </div>
+          </div>
+
+          <div class="progress">
+            <div id="hostProgressBar" style="width:0"></div>
+          </div>
+
+          <div
+            id="hostMainStage"
+            style="margin-top:18px"
+          ></div>
+
+          <div
+            id="hostMessage"
+            class="notice"
+            hidden
+          ></div>
+
+        </div>
+      </div>
+
+      <aside class="card">
+        <div class="pad">
+
+          <div class="phasebar">
+            <div>
+              <div class="muted small">
+                Participants
+              </div>
+
+              <h3 class="section-title">
+                Live Players
+              </h3>
+            </div>
+
+            <div class="pill" id="playerCount">
+              0
+            </div>
+          </div>
+
+          <div id="playersList"></div>
+
+          <hr class="separator">
+
+          <h3 class="section-title">
+            Scoreboard
+          </h3>
+
+          <div id="hostLeaderboard"></div>
+
+        </div>
+      </aside>
+
+    </div>
+
+  </section>
+
+</main>
+
+<script type="module" src="./js/host.js"></script>
+</body>
+</html>
