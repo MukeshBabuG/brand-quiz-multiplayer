@@ -15,7 +15,10 @@
       Brand & Logo Challenge
     </div>
 
-    <div class="pill">Host Dashboard</div>
+    <div class="row">
+      <div class="pill" id="topStatus">Host Dashboard</div>
+      <button id="signOutBtn" class="btn secondary hidden" type="button">Sign Out</button>
+    </div>
   </header>
 
   <section id="configWarning" class="card config-warning hidden">
@@ -28,7 +31,7 @@
     </div>
   </section>
 
-  <section id="authView" class="card hero hidden">
+  <section id="loginView" class="card hero hidden">
     <div class="eyebrow">Host Access</div>
 
     <h1>Host Dashboard</h1>
@@ -61,7 +64,15 @@
       </button>
     </form>
 
-    <div id="authMessage" class="notice" hidden></div>
+    <div id="loginMessage" class="notice" hidden></div>
+  </section>
+
+  <section id="setupView" class="card hero hidden">
+    <div class="eyebrow">New Game</div>
+    <h1>Create a Quiz</h1>
+    <p>Start a fresh game and share its code with your players.</p>
+    <button id="createGameBtn" class="btn primary" type="button">Create Game</button>
+    <div id="setupMessage" class="notice" hidden></div>
   </section>
 
   <section id="hostView" class="hidden">
@@ -73,37 +84,29 @@
 
           <div class="phasebar">
             <div>
-              <div class="muted small">
-                Current Game
-              </div>
-
-              <h2
-                id="hostPhaseTitle"
-                class="section-title"
-              >
-                Lobby
-              </h2>
+              <div class="muted small" id="roundMeta">Waiting for players</div>
+              <h2 id="phaseTitle" class="section-title">Lobby</h2>
             </div>
 
-            <div class="pill" id="hostGameCode">
-              ------
-            </div>
+            <div class="pill" id="shareCode">------</div>
           </div>
 
           <div class="progress">
-            <div id="hostProgressBar" style="width:0"></div>
+            <div id="progressBar" style="width:0"></div>
           </div>
 
-          <div
-            id="hostMainStage"
-            style="margin-top:18px"
-          ></div>
+          <div id="hostStage" style="margin-top:18px"></div>
 
-          <div
-            id="hostMessage"
-            class="notice"
-            hidden
-          ></div>
+          <div id="hostMessage" class="notice" hidden></div>
+
+          <div class="panel" style="margin-top:18px">
+            <div class="phasebar">
+              <h3 class="section-title">Host Controls</h3>
+              <button id="copyLinkBtn" class="btn secondary" type="button">Copy Player Link</button>
+            </div>
+            <div id="shareLink" class="muted small"></div>
+            <div id="controlPanel" class="row" style="margin-top:14px"></div>
+          </div>
 
         </div>
       </div>
@@ -127,7 +130,8 @@
             </div>
           </div>
 
-          <div id="playersList"></div>
+          <div class="muted small" id="submissionCount">0 joined</div>
+          <div id="answersTable" style="margin-top:14px"></div>
 
           <hr class="separator">
 
@@ -135,7 +139,7 @@
             Scoreboard
           </h3>
 
-          <div id="hostLeaderboard"></div>
+          <div id="leaderboard"></div>
 
         </div>
       </aside>
