@@ -104,7 +104,13 @@
               <h3 class="section-title">Host Controls</h3>
               <button id="copyLinkBtn" class="btn secondary" type="button">Copy Player Link</button>
             </div>
-            <div id="shareLink" class="muted small"></div>
+            <div class="share-tools">
+              <div>
+                <div class="muted small">Scan to join</div>
+                <div id="shareLink" class="share-link muted small"></div>
+              </div>
+              <div id="playerQr" class="player-qr" aria-label="QR code for the player link"></div>
+            </div>
             <div id="controlPanel" class="row" style="margin-top:14px"></div>
           </div>
 
@@ -150,6 +156,7 @@
 
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script type="module" src="./js/host.js"></script>
 </body>
 </html>

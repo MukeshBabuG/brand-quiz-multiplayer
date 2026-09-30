@@ -105,12 +105,31 @@ function render() {
   $('progressBar').style.width = g.phase === 'lobby' ? '0%' : `${Math.max(0, ((g.round_position - 1) / Math.max(1, g.total_rounds)) * 100)}%`;
   $('shareCode').textContent = g.code;
   $('shareLink').textContent = link;
+  renderPlayerQr(link);
   $('copyLinkBtn').onclick = () => copyText(link, $('copyLinkBtn'));
   $('leaderboard').innerHTML = scoreRows(state.leaderboard);
   setMessage($('hostMessage'), '');
   renderStage(g, r);
   renderAnswers(g);
   renderControls(g);
+}
+
+function renderPlayerQr(link) {
+  const container = $('playerQr');
+  if (!container) return;
+  container.replaceChildren();
+  if (window.QRCode) {
+    new window.QRCode(container, {
+      text: link,
+      width: 132,
+      height: 132,
+      colorDark: '#08111f',
+      colorLight: '#ffffff',
+      correctLevel: window.QRCode.CorrectLevel.M
+    });
+  } else {
+    container.textContent = 'QR unavailable';
+  }
 }
 
 function renderStage(g, r) {
