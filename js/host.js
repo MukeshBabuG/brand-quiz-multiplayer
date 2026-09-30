@@ -2,7 +2,7 @@ import { makeClient, configReady } from './supabase-client.js';
 import {
   $, escapeHtml, friendlyError, setMessage, phaseLabel,
   scoreRows, computeServerOffset, remainingMs, formatCountdown,
-  makeShareUrl, copyText, bindLogoFallback
+  makeShareUrl, copyText, bindLogoFallback, localLogoPath
 } from './common.js';
 
 const supabase = makeClient('host');
@@ -127,13 +127,15 @@ function renderStage(g, r) {
     return;
   }
   if (g.phase === 'logo_wait' || g.phase === 'logo_active') {
-    $('hostStage').innerHTML = `<div class="eyebrow center">Game 2 · Spot the Correct Logo</div><h2 class="center">${escapeHtml(r.brand)}</h2>${g.phase === 'logo_active' ? '<div id="hostTimer" class="timer">10.0</div>' : '<p class="center muted">Logo challenge is visible. Start the timer when everyone is ready.</p>'}<div class="logo-frame"><img src="${escapeHtml(r.question_image)}" alt="${escapeHtml(r.brand)} logo choices"></div><p class="center muted small">Host key: correct side is <b>${escapeHtml(r.correct_side.toUpperCase())}</b>.</p>`;
+    const questionImage = localLogoPath(r.round_number, 'question') || r.question_image;
+    $('hostStage').innerHTML = `<div class="eyebrow center">Game 2 · Spot the Correct Logo</div><h2 class="center">${escapeHtml(r.brand)}</h2>${g.phase === 'logo_active' ? '<div id="hostTimer" class="timer">10.0</div>' : '<p class="center muted">Logo challenge is visible. Start the timer when everyone is ready.</p>'}<div class="logo-frame"><img src="${escapeHtml(questionImage)}" alt="${escapeHtml(r.brand)} logo choices"></div><p class="center muted small">Host key: correct side is <b>${escapeHtml(r.correct_side.toUpperCase())}</b>.</p>`;
     bindLogoFallback($('hostStage').querySelector('img'), r.brand);
     if (g.phase === 'logo_active') startTimer();
     return;
   }
   if (g.phase === 'logo_reveal') {
-    $('hostStage').innerHTML = `<div class="eyebrow center">Correct Logo Revealed</div><h2 class="center">${escapeHtml(r.brand)}</h2><div class="logo-frame"><img src="${escapeHtml(r.answer_image)}" alt="Correct ${escapeHtml(r.brand)} logo"></div><p class="center muted small">${escapeHtml(r.note || '')}</p>`;
+    const answerImage = localLogoPath(r.round_number, 'answer') || r.answer_image;
+    $('hostStage').innerHTML = `<div class="eyebrow center">Correct Logo Revealed</div><h2 class="center">${escapeHtml(r.brand)}</h2><div class="logo-frame"><img src="${escapeHtml(answerImage)}" alt="Correct ${escapeHtml(r.brand)} logo"></div><p class="center muted small">${escapeHtml(r.note || '')}</p>`;
     bindLogoFallback($('hostStage').querySelector('img'), r.brand, true);
     return;
   }

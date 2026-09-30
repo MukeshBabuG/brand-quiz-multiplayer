@@ -65,6 +65,23 @@ export function makeShareUrl(code) {
   return u.toString();
 }
 
+const logoSlugs = [
+  'netflix', 'paypal', 'spotify', 'cartoon-network', 'starbucks',
+  'dominos-pizza', 'nbc', 'baskin-robbins', 'mastercard', 'rolex',
+  'microsoft', 'coca-cola', 'pepsi', 'disney', 'subway', 'lg', 'sprite',
+  'nintendo-switch', 'discord', 'hogwarts', 'playstation', 'opera',
+  'dunkin-donuts', 'nutella', 'shell', 'pizza-hut', 'icq', 'wikipedia',
+  'olympics', 'skype', 'visa', 'microsoft-edge', 'dota-2', 'hello-kitty',
+  'pokemon', 'nestle', 'toysrus'
+];
+
+export function localLogoPath(roundNumber, type) {
+  const slug = logoSlugs[Number(roundNumber) - 1];
+  return slug && ['question', 'answer'].includes(type)
+    ? `./assets/logos/${String(roundNumber).padStart(2, '0')}-${slug}-${type}.png`
+    : '';
+}
+
 export async function copyText(text, button) {
   try {
     await navigator.clipboard.writeText(text);

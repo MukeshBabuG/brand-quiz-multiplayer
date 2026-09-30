@@ -3,129 +3,75 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Brand & Logo Challenge</title>
+  <title>Slogan to Brand to Logo</title>
   <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
-<main class="page">
+<main class="page player-app">
   <header class="topbar">
-    <div class="brandmark">
-      <span class="dot"></span>
-      Brand & Logo Challenge
-    </div>
-
+    <div class="brandmark"><span class="dot"></span>Brand &amp; Logo Challenge</div>
     <div class="pill" id="topStatus">Player</div>
   </header>
 
   <section id="configWarning" class="card config-warning hidden">
     <div class="pad center">
       <h2>Setup required</h2>
-      <p class="muted">
-        Add your Supabase project URL and publishable key in
-        <b>js/config.js</b> before publishing.
-      </p>
+      <p class="muted">Add your Supabase project URL and publishable key in <b>js/config.js</b>.</p>
     </div>
   </section>
 
-  <section id="joinView" class="card hero hidden">
-    <div class="eyebrow">Monthly Connect Quiz</div>
-
-    <h1>
-      Guess the Brand.<br>
-      Then Spot the Real Logo.
-    </h1>
-
-    <p>
-      Enter the game code and your name.
-      The host controls every round, answer reveal,
-      logo timer, and next question.
-    </p>
-
-    <form id="joinForm" class="form">
-      <input
-        id="gameCode"
-        class="input"
-        maxlength="6"
-        autocomplete="off"
-        placeholder="GAME CODE"
-        required
-        style="
-          text-transform:uppercase;
-          text-align:center;
-          font-weight:900;
-          letter-spacing:.15em
-        "
-      >
-
-      <input
-        id="displayName"
-        class="input"
-        maxlength="30"
-        autocomplete="name"
-        placeholder="Your name"
-        required
-      >
-
-      <button class="btn primary" type="submit">
-        Join Game
-      </button>
+  <section id="joinView" class="card join-hero hidden">
+    <div class="join-copy">
+      <div class="eyebrow">Monthly Connect · Two-stage challenge</div>
+      <h1>Guess the brand.<br><span>Spot the real logo.</span></h1>
+      <p>Every round starts with a slogan, then tests your visual memory. Join the host’s room to play live with the team.</p>
+      <div class="game-flow" aria-label="Game flow">
+        <div><b>01</b><span>Decode the slogan</span></div>
+        <div><b>02</b><span>Choose the logo</span></div>
+        <div><b>03</b><span>Climb the board</span></div>
+      </div>
+    </div>
+    <form id="joinForm" class="join-form">
+      <label for="gameCode">Room code</label>
+      <input id="gameCode" class="input room-input" maxlength="6" autocomplete="off" placeholder="ABC123" required>
+      <label for="displayName">Your name</label>
+      <input id="displayName" class="input" maxlength="30" autocomplete="name" placeholder="Enter your name" required>
+      <button class="btn primary join-button" type="submit">Join the game <span>→</span></button>
+      <div id="joinMessage" class="notice" hidden></div>
     </form>
-
-    <div id="joinMessage" class="notice" hidden></div>
   </section>
 
   <section id="gameView" class="hidden">
-    <div class="grid2">
-
-      <div class="card">
-        <div class="pad">
-
-          <div class="phasebar">
-            <div>
-              <div class="muted small" id="roundMeta">
-                Waiting for host
-              </div>
-
-              <h2 class="section-title" id="phaseTitle">
-                Lobby
-              </h2>
-            </div>
-
-            <div class="pill" id="playerIdentity"></div>
-          </div>
-
-          <div class="progress">
-            <div id="progressBar" style="width:0"></div>
-          </div>
-
-          <div
-            id="mainStage"
-            style="margin-top:18px"
-          ></div>
-
-          <div
-            id="playerMessage"
-            class="notice"
-            hidden
-          ></div>
-
-        </div>
+    <div class="game-header">
+      <div>
+        <div class="eyebrow">Live room</div>
+        <h1 class="game-heading">Slogan <span>→</span> Brand <span>→</span> Logo</h1>
       </div>
+      <div class="player-chip"><span class="live-dot"></span><span id="playerIdentity"></span></div>
+    </div>
 
-      <aside class="card">
-        <div class="pad">
-          <h3 class="section-title">
-            Scoreboard
-          </h3>
+    <div class="round-strip">
+      <div>
+        <div class="muted small" id="roundMeta">Waiting for host</div>
+        <h2 class="section-title" id="phaseTitle">Lobby</h2>
+      </div>
+      <div class="round-progress"><div id="progressBar" style="width:0"></div></div>
+    </div>
 
-          <div id="leaderboard"></div>
-        </div>
+    <div class="grid2 player-grid">
+      <section class="card game-card">
+        <div class="game-card-top"><span class="stage-label">LIVE CHALLENGE</span><span class="pill">2 points / round</span></div>
+        <div id="mainStage" class="main-stage"></div>
+        <div id="playerMessage" class="notice" hidden></div>
+      </section>
+
+      <aside class="card scoreboard-card">
+        <div class="scoreboard-heading"><div><div class="eyebrow">Live standings</div><h2>Scoreboard</h2></div><span class="trophy-mark">★</span></div>
+        <div id="leaderboard"></div>
       </aside>
-
     </div>
   </section>
 </main>
-
 <script type="module" src="./js/player.js"></script>
 </body>
 </html>

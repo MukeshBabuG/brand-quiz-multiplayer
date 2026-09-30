@@ -1,0 +1,520 @@
+﻿[
+    {
+        "round":  1,
+        "brand":  "Netflix",
+        "kind":  "question",
+        "file":  "01-netflix-question.png",
+        "path":  "./assets/logos/01-netflix-question.png"
+    },
+    {
+        "round":  1,
+        "brand":  "Netflix",
+        "kind":  "answer",
+        "file":  "01-netflix-answer.png",
+        "path":  "./assets/logos/01-netflix-answer.png"
+    },
+    {
+        "round":  2,
+        "brand":  "PayPal",
+        "kind":  "question",
+        "file":  "02-paypal-question.png",
+        "path":  "./assets/logos/02-paypal-question.png"
+    },
+    {
+        "round":  2,
+        "brand":  "PayPal",
+        "kind":  "answer",
+        "file":  "02-paypal-answer.png",
+        "path":  "./assets/logos/02-paypal-answer.png"
+    },
+    {
+        "round":  3,
+        "brand":  "Spotify",
+        "kind":  "question",
+        "file":  "03-spotify-question.png",
+        "path":  "./assets/logos/03-spotify-question.png"
+    },
+    {
+        "round":  3,
+        "brand":  "Spotify",
+        "kind":  "answer",
+        "file":  "03-spotify-answer.png",
+        "path":  "./assets/logos/03-spotify-answer.png"
+    },
+    {
+        "round":  4,
+        "brand":  "Cartoon Network",
+        "kind":  "question",
+        "file":  "04-cartoon-network-question.png",
+        "path":  "./assets/logos/04-cartoon-network-question.png"
+    },
+    {
+        "round":  4,
+        "brand":  "Cartoon Network",
+        "kind":  "answer",
+        "file":  "04-cartoon-network-answer.png",
+        "path":  "./assets/logos/04-cartoon-network-answer.png"
+    },
+    {
+        "round":  5,
+        "brand":  "Starbucks",
+        "kind":  "question",
+        "file":  "05-starbucks-question.png",
+        "path":  "./assets/logos/05-starbucks-question.png"
+    },
+    {
+        "round":  5,
+        "brand":  "Starbucks",
+        "kind":  "answer",
+        "file":  "05-starbucks-answer.png",
+        "path":  "./assets/logos/05-starbucks-answer.png"
+    },
+    {
+        "round":  6,
+        "brand":  "Dominoâ€™s Pizza",
+        "kind":  "question",
+        "file":  "06-dominos-pizza-question.png",
+        "path":  "./assets/logos/06-dominos-pizza-question.png"
+    },
+    {
+        "round":  6,
+        "brand":  "Dominoâ€™s Pizza",
+        "kind":  "answer",
+        "file":  "06-dominos-pizza-answer.png",
+        "path":  "./assets/logos/06-dominos-pizza-answer.png"
+    },
+    {
+        "round":  7,
+        "brand":  "NBC",
+        "kind":  "question",
+        "file":  "07-nbc-question.png",
+        "path":  "./assets/logos/07-nbc-question.png"
+    },
+    {
+        "round":  7,
+        "brand":  "NBC",
+        "kind":  "answer",
+        "file":  "07-nbc-answer.png",
+        "path":  "./assets/logos/07-nbc-answer.png"
+    },
+    {
+        "round":  8,
+        "brand":  "Baskin-Robbins",
+        "kind":  "question",
+        "file":  "08-baskin-robbins-question.png",
+        "path":  "./assets/logos/08-baskin-robbins-question.png"
+    },
+    {
+        "round":  8,
+        "brand":  "Baskin-Robbins",
+        "kind":  "answer",
+        "file":  "08-baskin-robbins-answer.png",
+        "path":  "./assets/logos/08-baskin-robbins-answer.png"
+    },
+    {
+        "round":  9,
+        "brand":  "Mastercard",
+        "kind":  "question",
+        "file":  "09-mastercard-question.png",
+        "path":  "./assets/logos/09-mastercard-question.png"
+    },
+    {
+        "round":  9,
+        "brand":  "Mastercard",
+        "kind":  "answer",
+        "file":  "09-mastercard-answer.png",
+        "path":  "./assets/logos/09-mastercard-answer.png"
+    },
+    {
+        "round":  10,
+        "brand":  "Rolex",
+        "kind":  "question",
+        "file":  "10-rolex-question.png",
+        "path":  "./assets/logos/10-rolex-question.png"
+    },
+    {
+        "round":  10,
+        "brand":  "Rolex",
+        "kind":  "answer",
+        "file":  "10-rolex-answer.png",
+        "path":  "./assets/logos/10-rolex-answer.png"
+    },
+    {
+        "round":  11,
+        "brand":  "Microsoft",
+        "kind":  "question",
+        "file":  "11-microsoft-question.png",
+        "path":  "./assets/logos/11-microsoft-question.png"
+    },
+    {
+        "round":  11,
+        "brand":  "Microsoft",
+        "kind":  "answer",
+        "file":  "11-microsoft-answer.png",
+        "path":  "./assets/logos/11-microsoft-answer.png"
+    },
+    {
+        "round":  12,
+        "brand":  "Coca-Cola",
+        "kind":  "question",
+        "file":  "12-coca-cola-question.png",
+        "path":  "./assets/logos/12-coca-cola-question.png"
+    },
+    {
+        "round":  12,
+        "brand":  "Coca-Cola",
+        "kind":  "answer",
+        "file":  "12-coca-cola-answer.png",
+        "path":  "./assets/logos/12-coca-cola-answer.png"
+    },
+    {
+        "round":  13,
+        "brand":  "Pepsi",
+        "kind":  "question",
+        "file":  "13-pepsi-question.png",
+        "path":  "./assets/logos/13-pepsi-question.png"
+    },
+    {
+        "round":  13,
+        "brand":  "Pepsi",
+        "kind":  "answer",
+        "file":  "13-pepsi-answer.png",
+        "path":  "./assets/logos/13-pepsi-answer.png"
+    },
+    {
+        "round":  14,
+        "brand":  "Disney",
+        "kind":  "question",
+        "file":  "14-disney-question.png",
+        "path":  "./assets/logos/14-disney-question.png"
+    },
+    {
+        "round":  14,
+        "brand":  "Disney",
+        "kind":  "answer",
+        "file":  "14-disney-answer.png",
+        "path":  "./assets/logos/14-disney-answer.png"
+    },
+    {
+        "round":  15,
+        "brand":  "Subway",
+        "kind":  "question",
+        "file":  "15-subway-question.png",
+        "path":  "./assets/logos/15-subway-question.png"
+    },
+    {
+        "round":  15,
+        "brand":  "Subway",
+        "kind":  "answer",
+        "file":  "15-subway-answer.png",
+        "path":  "./assets/logos/15-subway-answer.png"
+    },
+    {
+        "round":  16,
+        "brand":  "LG",
+        "kind":  "question",
+        "file":  "16-lg-question.png",
+        "path":  "./assets/logos/16-lg-question.png"
+    },
+    {
+        "round":  16,
+        "brand":  "LG",
+        "kind":  "answer",
+        "file":  "16-lg-answer.png",
+        "path":  "./assets/logos/16-lg-answer.png"
+    },
+    {
+        "round":  17,
+        "brand":  "Sprite",
+        "kind":  "question",
+        "file":  "17-sprite-question.png",
+        "path":  "./assets/logos/17-sprite-question.png"
+    },
+    {
+        "round":  17,
+        "brand":  "Sprite",
+        "kind":  "answer",
+        "file":  "17-sprite-answer.png",
+        "path":  "./assets/logos/17-sprite-answer.png"
+    },
+    {
+        "round":  18,
+        "brand":  "Nintendo Switch",
+        "kind":  "question",
+        "file":  "18-nintendo-switch-question.png",
+        "path":  "./assets/logos/18-nintendo-switch-question.png"
+    },
+    {
+        "round":  18,
+        "brand":  "Nintendo Switch",
+        "kind":  "answer",
+        "file":  "18-nintendo-switch-answer.png",
+        "path":  "./assets/logos/18-nintendo-switch-answer.png"
+    },
+    {
+        "round":  19,
+        "brand":  "Discord",
+        "kind":  "question",
+        "file":  "19-discord-question.png",
+        "path":  "./assets/logos/19-discord-question.png"
+    },
+    {
+        "round":  19,
+        "brand":  "Discord",
+        "kind":  "answer",
+        "file":  "19-discord-answer.png",
+        "path":  "./assets/logos/19-discord-answer.png"
+    },
+    {
+        "round":  20,
+        "brand":  "Hogwarts",
+        "kind":  "question",
+        "file":  "20-hogwarts-question.png",
+        "path":  "./assets/logos/20-hogwarts-question.png"
+    },
+    {
+        "round":  20,
+        "brand":  "Hogwarts",
+        "kind":  "answer",
+        "file":  "20-hogwarts-answer.png",
+        "path":  "./assets/logos/20-hogwarts-answer.png"
+    },
+    {
+        "round":  21,
+        "brand":  "PlayStation",
+        "kind":  "question",
+        "file":  "21-playstation-question.png",
+        "path":  "./assets/logos/21-playstation-question.png"
+    },
+    {
+        "round":  21,
+        "brand":  "PlayStation",
+        "kind":  "answer",
+        "file":  "21-playstation-answer.png",
+        "path":  "./assets/logos/21-playstation-answer.png"
+    },
+    {
+        "round":  22,
+        "brand":  "Opera",
+        "kind":  "question",
+        "file":  "22-opera-question.png",
+        "path":  "./assets/logos/22-opera-question.png"
+    },
+    {
+        "round":  22,
+        "brand":  "Opera",
+        "kind":  "answer",
+        "file":  "22-opera-answer.png",
+        "path":  "./assets/logos/22-opera-answer.png"
+    },
+    {
+        "round":  23,
+        "brand":  "Dunkinâ€™ Donuts",
+        "kind":  "question",
+        "file":  "23-dunkin-donuts-question.png",
+        "path":  "./assets/logos/23-dunkin-donuts-question.png"
+    },
+    {
+        "round":  23,
+        "brand":  "Dunkinâ€™ Donuts",
+        "kind":  "answer",
+        "file":  "23-dunkin-donuts-answer.png",
+        "path":  "./assets/logos/23-dunkin-donuts-answer.png"
+    },
+    {
+        "round":  24,
+        "brand":  "Nutella",
+        "kind":  "question",
+        "file":  "24-nutella-question.png",
+        "path":  "./assets/logos/24-nutella-question.png"
+    },
+    {
+        "round":  24,
+        "brand":  "Nutella",
+        "kind":  "answer",
+        "file":  "24-nutella-answer.png",
+        "path":  "./assets/logos/24-nutella-answer.png"
+    },
+    {
+        "round":  25,
+        "brand":  "Shell",
+        "kind":  "question",
+        "file":  "25-shell-question.png",
+        "path":  "./assets/logos/25-shell-question.png"
+    },
+    {
+        "round":  25,
+        "brand":  "Shell",
+        "kind":  "answer",
+        "file":  "25-shell-answer.png",
+        "path":  "./assets/logos/25-shell-answer.png"
+    },
+    {
+        "round":  26,
+        "brand":  "Pizza Hut",
+        "kind":  "question",
+        "file":  "26-pizza-hut-question.png",
+        "path":  "./assets/logos/26-pizza-hut-question.png"
+    },
+    {
+        "round":  26,
+        "brand":  "Pizza Hut",
+        "kind":  "answer",
+        "file":  "26-pizza-hut-answer.png",
+        "path":  "./assets/logos/26-pizza-hut-answer.png"
+    },
+    {
+        "round":  27,
+        "brand":  "ICQ",
+        "kind":  "question",
+        "file":  "27-icq-question.png",
+        "path":  "./assets/logos/27-icq-question.png"
+    },
+    {
+        "round":  27,
+        "brand":  "ICQ",
+        "kind":  "answer",
+        "file":  "27-icq-answer.png",
+        "path":  "./assets/logos/27-icq-answer.png"
+    },
+    {
+        "round":  28,
+        "brand":  "Wikipedia",
+        "kind":  "question",
+        "file":  "28-wikipedia-question.png",
+        "path":  "./assets/logos/28-wikipedia-question.png"
+    },
+    {
+        "round":  28,
+        "brand":  "Wikipedia",
+        "kind":  "answer",
+        "file":  "28-wikipedia-answer.png",
+        "path":  "./assets/logos/28-wikipedia-answer.png"
+    },
+    {
+        "round":  29,
+        "brand":  "Olympics",
+        "kind":  "question",
+        "file":  "29-olympics-question.png",
+        "path":  "./assets/logos/29-olympics-question.png"
+    },
+    {
+        "round":  29,
+        "brand":  "Olympics",
+        "kind":  "answer",
+        "file":  "29-olympics-answer.png",
+        "path":  "./assets/logos/29-olympics-answer.png"
+    },
+    {
+        "round":  30,
+        "brand":  "Skype",
+        "kind":  "question",
+        "file":  "30-skype-question.png",
+        "path":  "./assets/logos/30-skype-question.png"
+    },
+    {
+        "round":  30,
+        "brand":  "Skype",
+        "kind":  "answer",
+        "file":  "30-skype-answer.png",
+        "path":  "./assets/logos/30-skype-answer.png"
+    },
+    {
+        "round":  31,
+        "brand":  "Visa",
+        "kind":  "question",
+        "file":  "31-visa-question.png",
+        "path":  "./assets/logos/31-visa-question.png"
+    },
+    {
+        "round":  31,
+        "brand":  "Visa",
+        "kind":  "answer",
+        "file":  "31-visa-answer.png",
+        "path":  "./assets/logos/31-visa-answer.png"
+    },
+    {
+        "round":  32,
+        "brand":  "Microsoft Edge",
+        "kind":  "question",
+        "file":  "32-microsoft-edge-question.png",
+        "path":  "./assets/logos/32-microsoft-edge-question.png"
+    },
+    {
+        "round":  32,
+        "brand":  "Microsoft Edge",
+        "kind":  "answer",
+        "file":  "32-microsoft-edge-answer.png",
+        "path":  "./assets/logos/32-microsoft-edge-answer.png"
+    },
+    {
+        "round":  33,
+        "brand":  "Dota 2",
+        "kind":  "question",
+        "file":  "33-dota-2-question.png",
+        "path":  "./assets/logos/33-dota-2-question.png"
+    },
+    {
+        "round":  33,
+        "brand":  "Dota 2",
+        "kind":  "answer",
+        "file":  "33-dota-2-answer.png",
+        "path":  "./assets/logos/33-dota-2-answer.png"
+    },
+    {
+        "round":  34,
+        "brand":  "Hello Kitty",
+        "kind":  "question",
+        "file":  "34-hello-kitty-question.png",
+        "path":  "./assets/logos/34-hello-kitty-question.png"
+    },
+    {
+        "round":  34,
+        "brand":  "Hello Kitty",
+        "kind":  "answer",
+        "file":  "34-hello-kitty-answer.png",
+        "path":  "./assets/logos/34-hello-kitty-answer.png"
+    },
+    {
+        "round":  35,
+        "brand":  "PokÃ©mon",
+        "kind":  "question",
+        "file":  "35-pokemon-question.png",
+        "path":  "./assets/logos/35-pokemon-question.png"
+    },
+    {
+        "round":  35,
+        "brand":  "PokÃ©mon",
+        "kind":  "answer",
+        "file":  "35-pokemon-answer.png",
+        "path":  "./assets/logos/35-pokemon-answer.png"
+    },
+    {
+        "round":  36,
+        "brand":  "NestlÃ©",
+        "kind":  "question",
+        "file":  "36-nestle-question.png",
+        "path":  "./assets/logos/36-nestle-question.png"
+    },
+    {
+        "round":  36,
+        "brand":  "NestlÃ©",
+        "kind":  "answer",
+        "file":  "36-nestle-answer.png",
+        "path":  "./assets/logos/36-nestle-answer.png"
+    },
+    {
+        "round":  37,
+        "brand":  "Toys R Us",
+        "kind":  "question",
+        "file":  "37-toysrus-question.png",
+        "path":  "./assets/logos/37-toysrus-question.png"
+    },
+    {
+        "round":  37,
+        "brand":  "Toys R Us",
+        "kind":  "answer",
+        "file":  "37-toysrus-answer.png",
+        "path":  "./assets/logos/37-toysrus-answer.png"
+    }
+]

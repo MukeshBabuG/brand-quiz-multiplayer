@@ -2,7 +2,7 @@ import { makeClient, configReady } from './supabase-client.js';
 import {
   $, escapeHtml, friendlyError, setMessage, phaseLabel,
   scoreRows, namesHtml, computeServerOffset, remainingMs, formatCountdown,
-  bindLogoFallback
+  bindLogoFallback, localLogoPath
 } from './common.js';
 
 const supabase = makeClient('player');
@@ -127,7 +127,8 @@ function renderSloganReveal(r) {
 function logoQuestionHtml(r, interactive) {
   const leftClass = selectedLogoSide === 'left' ? 'selected' : '';
   const rightClass = selectedLogoSide === 'right' ? 'selected' : '';
-  return `<div class="logo-frame"><img src="${escapeHtml(r.question_image)}" alt="Two logo choices for ${escapeHtml(r.brand)}"><button id="hotLeft" class="hotspot left ${interactive ? 'enabled' : ''} ${leftClass}" ${interactive ? '' : 'disabled'} aria-label="Choose left logo"></button><button id="hotRight" class="hotspot right ${interactive ? 'enabled' : ''} ${rightClass}" ${interactive ? '' : 'disabled'} aria-label="Choose right logo"></button></div><div class="choice-row"><button id="chooseLeft" class="btn secondary ${leftClass}" ${interactive ? '' : 'disabled'}>LEFT LOGO</button><button id="chooseRight" class="btn secondary ${rightClass}" ${interactive ? '' : 'disabled'}>RIGHT LOGO</button></div>`;
+  const image = localLogoPath(r.round_number, 'question') || r.question_image;
+  return `<div class="logo-frame"><img src="${escapeHtml(image)}" alt="Two logo choices for ${escapeHtml(r.brand)}"><button id="hotLeft" class="hotspot left ${interactive ? 'enabled' : ''} ${leftClass}" ${interactive ? '' : 'disabled'} aria-label="Choose left logo"></button><button id="hotRight" class="hotspot right ${interactive ? 'enabled' : ''} ${rightClass}" ${interactive ? '' : 'disabled'} aria-label="Choose right logo"></button></div><div class="choice-row"><button id="chooseLeft" class="btn secondary ${leftClass}" ${interactive ? '' : 'disabled'}>LEFT LOGO</button><button id="chooseRight" class="btn secondary ${rightClass}" ${interactive ? '' : 'disabled'}>RIGHT LOGO</button></div>`;
 }
 
 function bindPlayerLogoFallback(r, answer = false) {
@@ -183,7 +184,8 @@ function stopTimer() { if (timerHandle) clearInterval(timerHandle); timerHandle 
 function renderLogoReveal(r) {
   const mine = state.my_answer;
   const verdict = mine?.logo_submitted ? (mine.logo_correct ? 'You spotted the correct logo!' : `Your choice: ${(mine.logo_answer || '').toUpperCase()}`) : 'No logo answer submitted.';
-  $('mainStage').innerHTML = `<div class="eyebrow center">Correct Logo Reveal</div><h2 class="center">${escapeHtml(r.brand)}</h2><div class="logo-frame"><img src="${escapeHtml(r.answer_image)}" alt="Correct ${escapeHtml(r.brand)} logo reveal"></div><div class="answer-card ${mine?.logo_correct ? 'good' : 'bad'}" style="margin-top:16px"><b>${verdict}</b></div><div class="divider"></div><h3 class="section-title">Who got the logo right?</h3>${namesHtml(state.logo_correct_players)}<div class="waiting"><div class="pulse"></div><p class="muted">Waiting for the host to continue.</p></div>`;
+  const answerImage = localLogoPath(r.round_number, 'answer') || r.answer_image;
+  $('mainStage').innerHTML = `<div class="eyebrow center">Correct Logo Reveal</div><h2 class="center">${escapeHtml(r.brand)}</h2><div class="logo-frame"><img src="${escapeHtml(answerImage)}" alt="Correct ${escapeHtml(r.brand)} logo reveal"></div><div class="answer-card ${mine?.logo_correct ? 'good' : 'bad'}" style="margin-top:16px"><b>${verdict}</b></div><div class="divider"></div><h3 class="section-title">Who got the logo right?</h3>${namesHtml(state.logo_correct_players)}<div class="waiting"><div class="pulse"></div><p class="muted">Waiting for the host to continue.</p></div>`;
   bindPlayerLogoFallback(r, true);
 }
 
