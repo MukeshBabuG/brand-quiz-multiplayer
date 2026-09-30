@@ -15,6 +15,8 @@ let serverOffset = 0;
 let timerHandle = null;
 let fallbackHandle = null;
 let selectedLogoSide = null;
+let sloganDraft = '';
+let sloganDraftRound = null;
 
 function show(id) { $(id).classList.remove('hidden'); }
 function hide(id) { $(id).classList.add('hidden'); }
@@ -102,14 +104,25 @@ function renderLobby() {
 
 function renderSlogan(r) {
   const submitted = state.my_answer?.slogan_submitted;
+  if (sloganDraftRound !== r.round_number) {
+    sloganDraftRound = r.round_number;
+    sloganDraft = '';
+  }
+  if (submitted) sloganDraft = '';
   $('mainStage').innerHTML = `<div class="eyebrow center">Game 1 · Guess the Brand</div><div class="slogan center">“${escapeHtml(r.slogan)}”</div>${submitted ? `<div class="answer-card"><div class="muted small">Your answer is locked</div><div style="font-size:28px;font-weight:900;margin-top:6px">${escapeHtml(state.my_answer.slogan_answer)}</div><p class="muted">${state.game.slogan_submitted_count}/${state.game.player_count} answers submitted. Waiting for the host to reveal.</p></div>` : `<form id="sloganForm" class="form"><input id="sloganAnswer" class="input" maxlength="100" placeholder="Type the brand name" autocomplete="off" required><button class="btn primary" type="submit">Submit Answer</button></form><p class="center muted small">Once submitted, your brand answer is locked.</p>`}`;
-  if (!submitted) { $('sloganForm').addEventListener('submit', submitSlogan); setTimeout(() => $('sloganAnswer')?.focus(), 50); }
+  if (!submitted) {
+    const input = $('sloganAnswer');
+    input.value = sloganDraft;
+    input.addEventListener('input', () => { sloganDraft = input.value; });
+    $('sloganForm').addEventListener('submit', submitSlogan);
+  }
 }
 
 async function submitSlogan(e) {
   e.preventDefault();
   const answer = $('sloganAnswer').value.trim();
   if (!answer) return;
+  sloganDraft = answer;
   $('sloganForm').querySelector('button').disabled = true;
   try {
     const { error } = await supabase.rpc('submit_slogan', { p_game_code: gameCode, p_answer: answer });
