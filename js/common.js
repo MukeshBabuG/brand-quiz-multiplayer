@@ -77,3 +77,23 @@ export async function copyText(text, button) {
     window.prompt('Copy this link:', text);
   }
 }
+
+export function logoFallbackSvg(brand, answer = false) {
+  const label = answer ? `Correct logo: ${brand}` : `${brand} logo choices`;
+  const safeLabel = escapeHtml(label);
+  const safeBrand = escapeHtml(brand).toUpperCase();
+  const content = answer
+    ? `<text x="600" y="320" fill="#ffd54f" font-size="76" font-family="Arial" font-weight="700" text-anchor="middle">${safeBrand}</text>`
+    : `<rect x="30" y="30" width="540" height="540" rx="28" fill="#111d31"/><rect x="630" y="30" width="540" height="540" rx="28" fill="#111d31"/><text x="300" y="320" fill="#f7f9ff" font-size="56" font-family="Arial" text-anchor="middle">${safeBrand}</text><text x="900" y="320" fill="#ffd54f" font-size="48" font-family="Arial" text-anchor="middle">${safeBrand}</text>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600" role="img" aria-label="${safeLabel}"><rect width="1200" height="600" fill="#f7f9ff"/><rect width="1200" height="600" fill="#0c172a" opacity="${answer ? '1' : '.08'}"/>${content}</svg>`;
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+}
+
+export function bindLogoFallback(image, brand, answer = false) {
+  if (!image) return;
+  image.addEventListener('error', () => {
+    if (image.dataset.fallbackApplied) return;
+    image.dataset.fallbackApplied = 'true';
+    image.src = logoFallbackSvg(brand, answer);
+  }, { once: true });
+}
