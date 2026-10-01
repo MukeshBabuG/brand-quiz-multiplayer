@@ -154,7 +154,8 @@ function renderLogoWait(r) {
 }
 
 function renderLogoActive(r) {
-  $('mainStage').innerHTML = `<div class="eyebrow center">Game 2 · Spot the Correct Logo</div><h2 class="center">${escapeHtml(r.brand)}</h2><div id="timer" class="timer">10.0</div>${logoQuestionHtml(r, true)}<p id="logoChoiceNote" class="center muted small">You can change your choice until the timer reaches zero.</p>`;
+  const initialSeconds = Number(state.game.logo_duration_seconds || 5);
+  $('mainStage').innerHTML = `<div class="eyebrow center">Game 2 · Spot the Correct Logo</div><h2 class="center">${escapeHtml(r.brand)}</h2><div id="timer" class="timer">${initialSeconds.toFixed(1)}</div>${logoQuestionHtml(r, true)}<p id="logoChoiceNote" class="center muted small">You can change your choice until the timer reaches zero.</p>`;
   bindPlayerLogoFallback(r);
   bindLogoChoices(); startTimer();
 }
