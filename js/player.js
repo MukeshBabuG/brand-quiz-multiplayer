@@ -109,11 +109,16 @@ function renderSlogan(r) {
     sloganDraft = '';
   }
   if (submitted) sloganDraft = '';
-  $('mainStage').innerHTML = `<div class="eyebrow center">Game 1 · Guess the Brand</div><div class="slogan center">“${escapeHtml(r.slogan)}”</div>${submitted ? `<div class="answer-card"><div class="muted small">Your answer is locked</div><div style="font-size:28px;font-weight:900;margin-top:6px">${escapeHtml(state.my_answer.slogan_answer)}</div><p class="muted">${state.game.slogan_submitted_count}/${state.game.player_count} answers submitted. Waiting for the host to reveal.</p></div>` : `<form id="sloganForm" class="form"><input id="sloganAnswer" class="input" maxlength="100" placeholder="Type the brand name" autocomplete="off" required><button class="btn primary" type="submit">Submit Answer</button></form><p class="center muted small">Once submitted, your brand answer is locked.</p>`}`;
+  $('mainStage').innerHTML = `<div class="eyebrow center">Game 1 · Guess the Brand</div><div class="slogan center">“${escapeHtml(r.slogan)}”</div>${submitted ? `<div class="answer-card"><div class="muted small">Your answer is locked</div><div style="font-size:28px;font-weight:900;margin-top:6px">${escapeHtml(state.my_answer.slogan_answer)}</div><p class="muted">${state.game.slogan_submitted_count}/${state.game.player_count} answers submitted. Waiting for the host to reveal.</p></div>` : `<form id="sloganForm" class="form"><input id="sloganAnswer" class="input" maxlength="100" placeholder="Type the brand name" autocomplete="off" autofocus required><button class="btn primary" type="submit">Submit Answer</button></form><p class="center muted small">Once submitted, your brand answer is locked.</p>`}`;
   if (!submitted) {
     const input = $('sloganAnswer');
     input.value = sloganDraft;
     input.addEventListener('input', () => { sloganDraft = input.value; });
+    requestAnimationFrame(() => {
+      input.focus();
+      const end = input.value.length;
+      input.setSelectionRange(end, end);
+    });
     $('sloganForm').addEventListener('submit', submitSlogan);
   }
 }
