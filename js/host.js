@@ -55,7 +55,7 @@ $('createGameBtn').addEventListener('click', async () => {
   $('createGameBtn').disabled = true;
   setMessage($('setupMessage'), 'Creating game…');
   try {
-    const { data, error } = await supabase.rpc('create_game', { p_logo_duration_seconds: 10 });
+    const { data, error } = await supabase.rpc('create_game', { p_logo_duration_seconds: 5 });
     if (error) throw error;
     gameId = data.id;
     hide('setupView');
@@ -147,7 +147,11 @@ function renderStage(g, r) {
   }
   if (g.phase === 'logo_wait' || g.phase === 'logo_active') {
     const questionImage = localLogoPath(r.round_number, 'question') || r.question_image;
-    $('hostStage').innerHTML = `<div class="eyebrow center">Game 2 · Spot the Correct Logo</div><h2 class="center">${escapeHtml(r.brand)}</h2>${g.phase === 'logo_active' ? '<div id="hostTimer" class="timer">10.0</div>' : '<p class="center muted">Logo challenge is visible. Start the timer when everyone is ready.</p>'}<div class="logo-frame"><img src="${escapeHtml(questionImage)}" alt="${escapeHtml(r.brand)} logo choices"></div><p class="center muted small">Host key: correct side is <b>${escapeHtml(r.correct_side.toUpperCase())}</b>.</p>`;
+    const timerSeconds = Number(g.logo_duration_seconds || 5);
+    const timerText = g.phase === 'logo_active'
+      ? `<div id="hostTimer" class="timer">${timerSeconds.toFixed(1)}</div>`
+      : '<p class="center muted">Logo challenge is visible. Start the timer when everyone is ready.</p>';
+    $('hostStage').innerHTML = `<div class="eyebrow center">Game 2 · Spot the Correct Logo</div><h2 class="center">${escapeHtml(r.brand)}</h2>${timerText}<div class="logo-frame"><img src="${escapeHtml(questionImage)}" alt="${escapeHtml(r.brand)} logo choices"></div><p class="center muted small">Host key: correct side is <b>${escapeHtml(r.correct_side.toUpperCase())}</b>.</p>`;
     bindLogoFallback($('hostStage').querySelector('img'), r.brand);
     if (g.phase === 'logo_active') startTimer();
     return;
@@ -191,7 +195,10 @@ function renderControls(g) {
   } else if (g.phase === 'slogan') buttons.push('<button id="revealSloganBtn" class="btn primary">Reveal Brand Answer</button>');
   else if (g.phase === 'slogan_reveal') buttons.push('<button id="openLogoBtn" class="btn primary">Open Logo Challenge</button>');
   else if (g.phase === 'logo_wait') buttons.push(`<button id="startTimerBtn" class="btn primary">Start ${g.logo_duration_seconds}-Second Timer</button>`);
-  else if (g.phase === 'logo_active') buttons.push(`<button id="revealLogoBtn" class="btn primary" ${remainingMs(g.logo_deadline, serverOffset) <= 0 ? '' : 'disabled'}>Reveal Correct Logo</button>`);
+  else if (g.phase === 'logo_active') {
+    buttons.push(`<button id="restartTimerBtn" class="btn secondary">Restart ${g.logo_duration_seconds}-Second Timer</button>`);
+    buttons.push(`<button id="revealLogoBtn" class="btn primary" ${remainingMs(g.logo_deadline, serverOffset) <= 0 ? '' : 'disabled'}>Reveal Correct Logo</button>`);
+  }
   else if (g.phase === 'logo_reveal') buttons.push(`<button id="nextRoundBtn" class="btn primary">${g.round_position >= g.total_rounds ? 'Finish Game' : 'Next Round'}</button>`);
   if (!['lobby', 'finished'].includes(g.phase)) buttons.push('<button id="endGameBtn" class="btn danger">End Game</button>');
   if (g.phase === 'finished') buttons.push('<button id="newGameBtn" class="btn secondary">Create Another Game</button>');
@@ -200,6 +207,7 @@ function renderControls(g) {
   $('revealSloganBtn')?.addEventListener('click', () => callHost('reveal_slogan', { p_game_id: gameId }));
   $('openLogoBtn')?.addEventListener('click', () => callHost('open_logo_challenge', { p_game_id: gameId }));
   $('startTimerBtn')?.addEventListener('click', () => callHost('start_logo_timer', { p_game_id: gameId }));
+  $('restartTimerBtn')?.addEventListener('click', () => callHost('start_logo_timer', { p_game_id: gameId }));
   $('revealLogoBtn')?.addEventListener('click', () => callHost('reveal_logo', { p_game_id: gameId }));
   $('nextRoundBtn')?.addEventListener('click', () => callHost('next_round', { p_game_id: gameId }));
   $('endGameBtn')?.addEventListener('click', async () => { if (confirm('End this game now?')) await callHost('end_game', { p_game_id: gameId }); });
