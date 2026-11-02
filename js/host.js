@@ -17,6 +17,11 @@ let fallbackHandle = null;
 function show(id) { $(id).classList.remove('hidden'); }
 function hide(id) { $(id).classList.add('hidden'); }
 
+const timerSelect = $('timerSeconds');
+timerSelect.value = localStorage.getItem('hostTimerSeconds') || '10';
+timerSelect.addEventListener('change', () => localStorage.setItem('hostTimerSeconds', timerSelect.value));
+function selectedSeconds() { return Number(timerSelect.value) || 10; }
+
 async function init() {
   if (!configReady()) { show('configWarning'); return; }
   const { data: { session } } = await supabase.auth.getSession();
@@ -55,7 +60,7 @@ $('createGameBtn').addEventListener('click', async () => {
   $('createGameBtn').disabled = true;
   setMessage($('setupMessage'), 'Creating game…');
   try {
-    const { data, error } = await supabase.rpc('create_game', { p_logo_duration_seconds: 5 });
+    const { data, error } = await supabase.rpc('create_game', { p_logo_duration_seconds: 10 });
     if (error) throw error;
     gameId = data.id;
     hide('setupView');
@@ -132,39 +137,53 @@ function renderPlayerQr(link) {
   }
 }
 
+function statusGrid(players, submittedKey) {
+  if (!players.length) return '';
+  return `<div class="status-grid">${players.map(p => `<span class="status-chip ${p[submittedKey] ? 'answered' : 'waiting'}">${escapeHtml(p.name)} · ${p[submittedKey] ? 'Answered' : 'Waiting…'}</span>`).join('')}</div>`;
+}
+
+function revealGrid(players, submittedKey, correctKey, valueFn) {
+  if (!players.length) return '';
+  return `<div class="status-grid">${players.map(p => {
+    const cls = !p[submittedKey] ? 'waiting' : p[correctKey] ? 'correct' : 'wrong';
+    const text = p[submittedKey] ? `${escapeHtml(valueFn(p))} ${p[correctKey] ? '✓' : '✕'}` : 'No answer';
+    return `<span class="status-chip ${cls}"><b>${escapeHtml(p.name)}</b> · ${text}</span>`;
+  }).join('')}</div>`;
+}
+
 function renderStage(g, r) {
+  const players = state.players || [];
   if (g.phase === 'lobby') {
-    $('hostStage').innerHTML = '<div class="waiting"><div class="pulse"></div><h2>Lobby Open</h2><p class="muted">Share the player link. Names will appear below as people join.</p></div>';
+    $('hostStage').innerHTML = `<div class="waiting"><div class="pulse"></div><h2>Lobby Open</h2><p class="muted">Scan the QR code and enter a character name plus your original name. Only character names are shown here.</p></div>${players.length ? `<div class="name-chips">${players.map(p => `<span>${escapeHtml(p.name)}</span>`).join('')}</div>` : ''}`;
     return;
   }
   if (g.phase === 'slogan') {
-    $('hostStage').innerHTML = `<div class="eyebrow center">Game 1 · Guess the Brand</div><div class="slogan center">“${escapeHtml(r.slogan)}”</div><div class="panel center"><span class="muted">Host answer key:</span> <b>${escapeHtml(r.brand)}</b></div>`;
+    const timer = g.slogan_deadline ? '<div id="hostTimer" class="timer">0.0</div>' : '';
+    $('hostStage').innerHTML = `<div class="eyebrow center">Game 1 · Guess the Brand</div>${timer}<div class="slogan center">“${escapeHtml(r.slogan)}”</div><p class="center muted">${g.slogan_submitted_count} / ${g.player_count} answered</p>${statusGrid(players, 'slogan_submitted')}`;
+    if (g.slogan_deadline) startTimer(g.slogan_deadline, 'revealSloganBtn');
     return;
   }
   if (g.phase === 'slogan_reveal') {
-    $('hostStage').innerHTML = `<div class="eyebrow center">Brand Revealed to Players</div><div class="slogan center">“${escapeHtml(r.slogan)}”</div><div class="brand-answer center">${escapeHtml(r.brand)}</div>`;
+    $('hostStage').innerHTML = `<div class="eyebrow center">Brand Revealed</div><div class="slogan center">“${escapeHtml(r.slogan)}”</div><div class="brand-answer center">${escapeHtml(r.brand)}</div><h3 class="section-title" style="margin-top:16px">All answers</h3>${revealGrid(players, 'slogan_submitted', 'slogan_correct', p => p.slogan_answer || '')}`;
     return;
   }
   if (g.phase === 'logo_wait' || g.phase === 'logo_active') {
     const questionImage = localLogoPath(r.round_number, 'question') || r.question_image;
-    const timerSeconds = Number(g.logo_duration_seconds || 5);
-    const timerText = g.phase === 'logo_active'
-      ? `<div id="hostTimer" class="timer">${timerSeconds.toFixed(1)}</div>`
-      : '<p class="center muted">Logo challenge is visible. Start the timer when everyone is ready.</p>';
-    $('hostStage').innerHTML = `<div class="eyebrow center">Game 2 · Spot the Correct Logo</div><h2 class="center">${escapeHtml(r.brand)}</h2>${timerText}<div class="logo-frame"><img src="${escapeHtml(questionImage)}" alt="${escapeHtml(r.brand)} logo choices"></div><p class="center muted small">Host key: correct side is <b>${escapeHtml(r.correct_side.toUpperCase())}</b>.</p>`;
+    const active = g.phase === 'logo_active';
+    $('hostStage').innerHTML = `<div class="eyebrow center">Game 2 · Spot the Correct Logo</div><h2 class="center">${escapeHtml(r.brand)}</h2>${active ? `<div id="hostTimer" class="timer">${g.logo_duration_seconds}.0</div>` : '<p class="center muted">Get ready! The timer starts soon.</p>'}<div class="logo-frame"><img src="${escapeHtml(questionImage)}" alt="${escapeHtml(r.brand)} logo choices"></div>${active ? `<p class="center muted">${g.logo_submitted_count} / ${g.player_count} answered</p>${statusGrid(players, 'logo_submitted')}` : ''}`;
     bindLogoFallback($('hostStage').querySelector('img'), r.brand);
-    if (g.phase === 'logo_active') startTimer();
+    if (active) startTimer(g.logo_deadline, 'revealLogoBtn');
     return;
   }
   if (g.phase === 'logo_reveal') {
     const answerImage = localLogoPath(r.round_number, 'answer') || r.answer_image;
-    $('hostStage').innerHTML = `<div class="eyebrow center">Correct Logo Revealed</div><h2 class="center">${escapeHtml(r.brand)}</h2><div class="logo-frame"><img src="${escapeHtml(answerImage)}" alt="Correct ${escapeHtml(r.brand)} logo"></div><p class="center muted small">${escapeHtml(r.note || '')}</p>`;
+    $('hostStage').innerHTML = `<div class="eyebrow center">Correct Logo Revealed</div><h2 class="center">${escapeHtml(r.brand)}</h2><div class="logo-frame"><img src="${escapeHtml(answerImage)}" alt="Correct ${escapeHtml(r.brand)} logo"></div><p class="center muted small">${escapeHtml(r.note || '')}</p><h3 class="section-title">All choices</h3>${revealGrid(players, 'logo_submitted', 'logo_correct', p => (p.logo_answer || '').toUpperCase())}`;
     bindLogoFallback($('hostStage').querySelector('img'), r.brand, true);
     return;
   }
   if (g.phase === 'finished') {
     $('progressBar').style.width = '100%';
-    $('hostStage').innerHTML = `<div class="center"><div class="eyebrow">Game Complete</div><h1 class="round-title">Final Leaderboard</h1></div>${scoreRows(state.leaderboard)}`;
+    $('hostStage').innerHTML = `<div class="center"><div class="eyebrow">Game Complete · Who's Who?</div><h1 class="round-title">Final Leaderboard</h1></div>${scoreRows(state.leaderboard)}`;
   }
 }
 
@@ -173,17 +192,31 @@ function resultCell(submitted, correct, value = '') {
   return `${escapeHtml(value)} ${correct ? '<span class="yes">✓</span>' : '<span class="no">✕</span>'}`;
 }
 
+function statusCell(submitted) {
+  return submitted ? '<span class="yes">Answered</span>' : '<span class="pending">Waiting…</span>';
+}
+
 function renderAnswers(g) {
   const players = state.players || [];
   const isLogo = ['logo_wait', 'logo_active', 'logo_reveal'].includes(g.phase);
   $('submissionCount').textContent = g.phase === 'lobby' ? `${g.player_count} joined` : isLogo ? `${g.logo_submitted_count} / ${g.player_count} logo choices` : `${g.slogan_submitted_count} / ${g.player_count} brand answers`;
   if (!players.length) { $('answersTable').innerHTML = '<div class="empty">No players yet.</div>'; return; }
   if (g.phase === 'lobby') {
-    $('answersTable').innerHTML = `<table class="table"><thead><tr><th>Name</th><th>Joined</th><th></th></tr></thead><tbody>${players.map(p => `<tr><td><b>${escapeHtml(p.name)}</b></td><td>${new Date(p.joined_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td><td><button class="btn danger remove-player" data-id="${p.id}">Remove</button></td></tr>`).join('')}</tbody></table>`;
+    $('answersTable').innerHTML = `<table class="table"><thead><tr><th>Character</th><th>Joined</th><th></th></tr></thead><tbody>${players.map(p => `<tr><td><b>${escapeHtml(p.name)}</b></td><td>${new Date(p.joined_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td><td><button class="btn danger remove-player" data-id="${p.id}">Remove</button></td></tr>`).join('')}</tbody></table>`;
     document.querySelectorAll('.remove-player').forEach(btn => btn.addEventListener('click', () => removePlayer(btn.dataset.id)));
     return;
   }
-  $('answersTable').innerHTML = `<table class="table"><thead><tr><th>Player</th><th>Brand answer</th><th>Logo choice</th><th>Slogan</th><th>Logo</th><th>Total</th></tr></thead><tbody>${players.map(p => `<tr><td><b>${escapeHtml(p.name)}</b></td><td>${resultCell(p.slogan_submitted, p.slogan_correct, p.slogan_answer || '')}</td><td>${resultCell(p.logo_submitted, p.logo_correct, (p.logo_answer || '').toUpperCase())}</td><td>${p.slogan_score}</td><td>${p.logo_score}</td><td><b>${p.total_score}</b></td></tr>`).join('')}</tbody></table>`;
+  const finished = g.phase === 'finished';
+  const sloganRevealed = g.phase !== 'slogan';
+  const totals = new Map((state.leaderboard || []).map(x => [x.player_id, x.total_score]));
+  const brandCell = p => sloganRevealed ? resultCell(p.slogan_submitted, p.slogan_correct, p.slogan_answer || '') : statusCell(p.slogan_submitted);
+  const logoCell = p => {
+    if (g.phase === 'logo_reveal' || finished) return resultCell(p.logo_submitted, p.logo_correct, (p.logo_answer || '').toUpperCase());
+    if (g.phase === 'logo_active') return statusCell(p.logo_submitted);
+    return '<span class="pending">—</span>';
+  };
+  const nameCell = p => `<b>${escapeHtml(p.name)}</b>${finished && p.real_name ? `<div class="real-name">${escapeHtml(p.real_name)}</div>` : ''}`;
+  $('answersTable').innerHTML = `<table class="table"><thead><tr><th>Player</th><th>Brand</th><th>Logo</th><th>Total</th></tr></thead><tbody>${players.map(p => `<tr><td>${nameCell(p)}</td><td>${brandCell(p)}</td><td>${logoCell(p)}</td><td><b>${totals.get(p.id) ?? 0}</b></td></tr>`).join('')}</tbody></table>`;
 }
 
 function renderControls(g) {
@@ -192,22 +225,23 @@ function renderControls(g) {
   if (g.phase === 'lobby') {
     buttons.push('<label class="row small muted"><input id="shuffleRounds" type="checkbox"> Shuffle quiz rounds</label>');
     buttons.push(`<button id="startGameBtn" class="btn primary" ${g.player_count < 1 ? 'disabled' : ''}>Start Game</button>`);
-  } else if (g.phase === 'slogan') buttons.push('<button id="revealSloganBtn" class="btn primary">Reveal Brand Answer</button>');
-  else if (g.phase === 'slogan_reveal') buttons.push('<button id="openLogoBtn" class="btn primary">Open Logo Challenge</button>');
-  else if (g.phase === 'logo_wait') buttons.push(`<button id="startTimerBtn" class="btn primary">Start ${g.logo_duration_seconds}-Second Timer</button>`);
-  else if (g.phase === 'logo_active') {
-    buttons.push(`<button id="restartTimerBtn" class="btn secondary">Restart ${g.logo_duration_seconds}-Second Timer</button>`);
-    buttons.push(`<button id="revealLogoBtn" class="btn primary" ${remainingMs(g.logo_deadline, serverOffset) <= 0 ? '' : 'disabled'}>Reveal Correct Logo</button>`);
+  } else if (g.phase === 'slogan') {
+    if (!g.slogan_deadline) buttons.push('<button id="startSloganTimerBtn" class="btn secondary">Start Answer Timer</button>');
+    const running = g.slogan_deadline && remainingMs(g.slogan_deadline, serverOffset) > 0;
+    buttons.push(`<button id="revealSloganBtn" class="btn primary" ${running ? 'disabled' : ''}>Reveal All Answers</button>`);
   }
-  else if (g.phase === 'logo_reveal') buttons.push(`<button id="nextRoundBtn" class="btn primary">${g.round_position >= g.total_rounds ? 'Finish Game' : 'Next Round'}</button>`);
+  else if (g.phase === 'slogan_reveal') buttons.push('<button id="openLogoBtn" class="btn primary">Open Logo Challenge</button>');
+  else if (g.phase === 'logo_wait') buttons.push('<button id="startTimerBtn" class="btn primary">Start Logo Timer</button>');
+  else if (g.phase === 'logo_active') buttons.push(`<button id="revealLogoBtn" class="btn primary" ${remainingMs(g.logo_deadline, serverOffset) <= 0 ? '' : 'disabled'}>Reveal All Choices</button>`);
+  else if (g.phase === 'logo_reveal') buttons.push(`<button id="nextRoundBtn" class="btn primary">${g.round_position >= g.total_rounds ? 'Finish Game & Reveal Names' : 'Next Round'}</button>`);
   if (!['lobby', 'finished'].includes(g.phase)) buttons.push('<button id="endGameBtn" class="btn danger">End Game</button>');
   if (g.phase === 'finished') buttons.push('<button id="newGameBtn" class="btn secondary">Create Another Game</button>');
   c.innerHTML = buttons.join('');
   $('startGameBtn')?.addEventListener('click', () => callHost('start_game', { p_game_id: gameId, p_shuffle: $('shuffleRounds').checked }));
+  $('startSloganTimerBtn')?.addEventListener('click', () => callHost('start_slogan_timer', { p_game_id: gameId, p_seconds: selectedSeconds() }));
   $('revealSloganBtn')?.addEventListener('click', () => callHost('reveal_slogan', { p_game_id: gameId }));
   $('openLogoBtn')?.addEventListener('click', () => callHost('open_logo_challenge', { p_game_id: gameId }));
-  $('startTimerBtn')?.addEventListener('click', () => callHost('start_logo_timer', { p_game_id: gameId }));
-  $('restartTimerBtn')?.addEventListener('click', () => callHost('start_logo_timer', { p_game_id: gameId }));
+  $('startTimerBtn')?.addEventListener('click', () => callHost('start_logo_timer', { p_game_id: gameId, p_seconds: selectedSeconds() }));
   $('revealLogoBtn')?.addEventListener('click', () => callHost('reveal_logo', { p_game_id: gameId }));
   $('nextRoundBtn')?.addEventListener('click', () => callHost('next_round', { p_game_id: gameId }));
   $('endGameBtn')?.addEventListener('click', async () => { if (confirm('End this game now?')) await callHost('end_game', { p_game_id: gameId }); });
@@ -229,12 +263,12 @@ async function removePlayer(playerId) {
   await callHost('remove_player', { p_game_id: gameId, p_player_id: playerId });
 }
 
-function startTimer() {
+function startTimer(deadline, buttonId) {
   stopTimer();
   const tick = () => {
-    const ms = remainingMs(state.game.logo_deadline, serverOffset);
+    const ms = remainingMs(deadline, serverOffset);
     if ($('hostTimer')) $('hostTimer').textContent = formatCountdown(ms);
-    if ($('revealLogoBtn')) $('revealLogoBtn').disabled = ms > 0;
+    if ($(buttonId)) $(buttonId).disabled = ms > 0;
     if (ms <= 0) stopTimer();
   };
   tick();
