@@ -34,7 +34,7 @@ export function scoreRows(leaderboard = [], limit = null) {
   return `<div class="score-list">${rows.map((p, i) => `
     <div class="score-row">
       <div class="rank">${i + 1}</div>
-      <div class="score-name">${escapeHtml(p.name)}</div>
+      <div class="score-name">${escapeHtml(p.name)}${p.real_name ? ` <span class="real-name">(${escapeHtml(p.real_name)})</span>` : ''}</div>
       <div class="score-split"><span>S ${p.slogan_score}</span><span>L ${p.logo_score}</span></div>
       <div class="score-total">${p.total_score}</div>
     </div>`).join('')}</div>`;
