@@ -42,9 +42,10 @@ $('joinForm').addEventListener('submit', async (e) => {
   setMessage($('joinMessage'), 'Joining…');
   const code = $('gameCode').value.trim().toUpperCase();
   const name = $('displayName').value.trim();
+  const realName = $('realName').value.trim();
   try {
     await ensurePlayerSession();
-    const { data, error } = await supabase.rpc('join_game', { p_game_code: code, p_display_name: name });
+    const { data, error } = await supabase.rpc('join_game', { p_game_code: code, p_display_name: name, p_real_name: realName });
     if (error) throw error;
     gameCode = data.code;
     gameId = data.game_id;
@@ -109,18 +110,34 @@ function renderSlogan(r) {
     sloganDraft = '';
   }
   if (submitted) sloganDraft = '';
-  $('mainStage').innerHTML = `<div class="eyebrow center">Game 1 · Guess the Brand</div><div class="slogan center">“${escapeHtml(r.slogan)}”</div>${submitted ? `<div class="answer-card"><div class="muted small">Your answer is locked</div><div style="font-size:28px;font-weight:900;margin-top:6px">${escapeHtml(state.my_answer.slogan_answer)}</div><p class="muted">${state.game.slogan_submitted_count}/${state.game.player_count} answers submitted. Waiting for the host to reveal.</p></div>` : `<form id="sloganForm" class="form"><input id="sloganAnswer" class="input" maxlength="100" placeholder="Type the brand name" autocomplete="off" autofocus required><button class="btn primary" type="submit">Submit Answer</button></form><p class="center muted small">Once submitted, your brand answer is locked.</p>`}`;
-  if (!submitted) {
+  const deadline = state.game.slogan_deadline;
+  const expired = deadline && remainingMs(deadline, serverOffset) <= 0;
+  const timerHtml = deadline ? '<div id="timer" class="timer">0.0</div>' : '';
+  const formHtml = expired
+    ? '<div class="answer-card bad"><b>Time is up! No answer submitted.</b></div>'
+    : `<form id="sloganForm" class="form"><input id="sloganAnswer" class="input" maxlength="100" placeholder="Type the brand name" autocomplete="off" required><button class="btn primary" type="submit">Submit Answer</button></form><p class="center muted small">Once submitted, your brand answer is locked.</p>`;
+  $('mainStage').innerHTML = `<div class="eyebrow center">Game 1 · Guess the Brand</div>${timerHtml}<div class="slogan center">“${escapeHtml(r.slogan)}”</div>${submitted ? `<div class="answer-card"><div class="muted small">Your answer is locked</div><div style="font-size:28px;font-weight:900;margin-top:6px">${escapeHtml(state.my_answer.slogan_answer)}</div><p class="muted">${state.game.slogan_submitted_count}/${state.game.player_count} answers submitted. Waiting for the host to reveal.</p></div>` : formHtml}`;
+  if (!submitted && !expired) {
     const input = $('sloganAnswer');
     input.value = sloganDraft;
     input.addEventListener('input', () => { sloganDraft = input.value; });
-    requestAnimationFrame(() => {
-      input.focus();
-      const end = input.value.length;
-      input.setSelectionRange(end, end);
-    });
     $('sloganForm').addEventListener('submit', submitSlogan);
   }
+  if (deadline) startSloganTimer(deadline);
+}
+
+function startSloganTimer(deadline) {
+  stopTimer();
+  const tick = () => {
+    const ms = remainingMs(deadline, serverOffset);
+    if ($('timer')) $('timer').textContent = formatCountdown(ms);
+    if (ms <= 0) {
+      stopTimer();
+      const form = $('sloganForm');
+      if (form) form.outerHTML = '<div class="answer-card bad"><b>Time is up! No answer submitted.</b></div>';
+    }
+  };
+  tick(); timerHandle = setInterval(tick, 100);
 }
 
 async function submitSlogan(e) {
@@ -154,13 +171,12 @@ function bindPlayerLogoFallback(r, answer = false) {
 }
 
 function renderLogoWait(r) {
-  $('mainStage').innerHTML = `<div class="eyebrow center">Game 2 · Spot the Correct Logo</div><h2 class="center">${escapeHtml(r.brand)}</h2><p class="center muted">The host will start the ${state.game.logo_duration_seconds}-second timer. Choices are disabled until then.</p>${logoQuestionHtml(r, false)}<div class="waiting"><div class="pulse"></div><p class="muted">Get ready…</p></div>`;
+  $('mainStage').innerHTML = `<div class="eyebrow center">Game 2 · Spot the Correct Logo</div><h2 class="center">${escapeHtml(r.brand)}</h2><p class="center muted">The host will start the timer. Choices are disabled until then.</p>${logoQuestionHtml(r, false)}<div class="waiting"><div class="pulse"></div><p class="muted">Get ready…</p></div>`;
   bindPlayerLogoFallback(r);
 }
 
 function renderLogoActive(r) {
-  const initialSeconds = Number(state.game.logo_duration_seconds || 5);
-  $('mainStage').innerHTML = `<div class="eyebrow center">Game 2 · Spot the Correct Logo</div><h2 class="center">${escapeHtml(r.brand)}</h2><div id="timer" class="timer">${initialSeconds.toFixed(1)}</div>${logoQuestionHtml(r, true)}<p id="logoChoiceNote" class="center muted small">You can change your choice until the timer reaches zero.</p>`;
+  $('mainStage').innerHTML = `<div class="eyebrow center">Game 2 · Spot the Correct Logo</div><h2 class="center">${escapeHtml(r.brand)}</h2><div id="timer" class="timer">${state.game.logo_duration_seconds}.0</div>${logoQuestionHtml(r, true)}<p id="logoChoiceNote" class="center muted small">You can change your choice until the timer reaches zero.</p>`;
   bindPlayerLogoFallback(r);
   bindLogoChoices(); startTimer();
 }
