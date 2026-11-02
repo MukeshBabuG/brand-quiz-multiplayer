@@ -3,7 +3,7 @@ import {
   $, escapeHtml, friendlyError, setMessage, phaseLabel,
   scoreRows, computeServerOffset, remainingMs, formatCountdown,
   makeShareUrl, copyText, bindLogoFallback, localLogoPath
-} from './common.js';
+} from './common.js?v=2';
 
 const supabase = makeClient('host');
 let gameId = null;
@@ -17,10 +17,10 @@ let fallbackHandle = null;
 function show(id) { $(id).classList.remove('hidden'); }
 function hide(id) { $(id).classList.add('hidden'); }
 
-const timerSelect = $('timerSeconds');
-timerSelect.value = localStorage.getItem('hostTimerSeconds') || '10';
-timerSelect.addEventListener('change', () => localStorage.setItem('hostTimerSeconds', timerSelect.value));
-function selectedSeconds() { return Number(timerSelect.value) || 10; }
+const TIMER_OPTIONS = [5, 10, 15];
+function timerButtons(prefix) {
+  return TIMER_OPTIONS.map(s => `<button class="btn secondary ${prefix}-timer" data-seconds="${s}">⏱ ${s} sec</button>`).join('');
+}
 
 async function init() {
   if (!configReady()) { show('configWarning'); return; }
@@ -226,22 +226,22 @@ function renderControls(g) {
     buttons.push('<label class="row small muted"><input id="shuffleRounds" type="checkbox"> Shuffle quiz rounds</label>');
     buttons.push(`<button id="startGameBtn" class="btn primary" ${g.player_count < 1 ? 'disabled' : ''}>Start Game</button>`);
   } else if (g.phase === 'slogan') {
-    if (!g.slogan_deadline) buttons.push('<button id="startSloganTimerBtn" class="btn secondary">Start Answer Timer</button>');
+    if (!g.slogan_deadline) buttons.push(timerButtons('slogan'));
     const running = g.slogan_deadline && remainingMs(g.slogan_deadline, serverOffset) > 0;
     buttons.push(`<button id="revealSloganBtn" class="btn primary" ${running ? 'disabled' : ''}>Reveal All Answers</button>`);
   }
   else if (g.phase === 'slogan_reveal') buttons.push('<button id="openLogoBtn" class="btn primary">Open Logo Challenge</button>');
-  else if (g.phase === 'logo_wait') buttons.push('<button id="startTimerBtn" class="btn primary">Start Logo Timer</button>');
+  else if (g.phase === 'logo_wait') buttons.push(timerButtons('logo'));
   else if (g.phase === 'logo_active') buttons.push(`<button id="revealLogoBtn" class="btn primary" ${remainingMs(g.logo_deadline, serverOffset) <= 0 ? '' : 'disabled'}>Reveal All Choices</button>`);
   else if (g.phase === 'logo_reveal') buttons.push(`<button id="nextRoundBtn" class="btn primary">${g.round_position >= g.total_rounds ? 'Finish Game & Reveal Names' : 'Next Round'}</button>`);
   if (!['lobby', 'finished'].includes(g.phase)) buttons.push('<button id="endGameBtn" class="btn danger">End Game</button>');
   if (g.phase === 'finished') buttons.push('<button id="newGameBtn" class="btn secondary">Create Another Game</button>');
   c.innerHTML = buttons.join('');
   $('startGameBtn')?.addEventListener('click', () => callHost('start_game', { p_game_id: gameId, p_shuffle: $('shuffleRounds').checked }));
-  $('startSloganTimerBtn')?.addEventListener('click', () => callHost('start_slogan_timer', { p_game_id: gameId, p_seconds: selectedSeconds() }));
+  c.querySelectorAll('.slogan-timer').forEach(btn => btn.addEventListener('click', () => callHost('start_slogan_timer', { p_game_id: gameId, p_seconds: Number(btn.dataset.seconds) })));
   $('revealSloganBtn')?.addEventListener('click', () => callHost('reveal_slogan', { p_game_id: gameId }));
   $('openLogoBtn')?.addEventListener('click', () => callHost('open_logo_challenge', { p_game_id: gameId }));
-  $('startTimerBtn')?.addEventListener('click', () => callHost('start_logo_timer', { p_game_id: gameId, p_seconds: selectedSeconds() }));
+  c.querySelectorAll('.logo-timer').forEach(btn => btn.addEventListener('click', () => callHost('start_logo_timer', { p_game_id: gameId, p_seconds: Number(btn.dataset.seconds) })));
   $('revealLogoBtn')?.addEventListener('click', () => callHost('reveal_logo', { p_game_id: gameId }));
   $('nextRoundBtn')?.addEventListener('click', () => callHost('next_round', { p_game_id: gameId }));
   $('endGameBtn')?.addEventListener('click', async () => { if (confirm('End this game now?')) await callHost('end_game', { p_game_id: gameId }); });

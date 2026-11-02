@@ -3,7 +3,7 @@ import {
   $, escapeHtml, friendlyError, setMessage, phaseLabel,
   scoreRows, namesHtml, computeServerOffset, remainingMs, formatCountdown,
   bindLogoFallback, localLogoPath
-} from './common.js';
+} from './common.js?v=2';
 
 const supabase = makeClient('player');
 let gameCode = '';
